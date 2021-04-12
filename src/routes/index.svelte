@@ -1,19 +1,22 @@
 <script>
-	import Counter from '$lib/Counter.svelte';
+	import { Arionum } from '$lib/aro-js/arionum';
+	import { Transaction } from '$lib/aro-js/transaction';
 	import { onMount } from 'svelte';
 
-	let Arionum = null;
+	let wallet = undefined;
 
 	onMount(async () => {
-		const module = await import('arionum-js');
-
-		Arionum = module.default;
 		const arionum = new Arionum();
 
-		arionum.nodeAddress = 'https://node.ariochain.info/';
+		arionum.nodeAddress = 'http://aro-api.herokuapp.com';
 
 		await arionum.generateAccount().then(accountDetails => {
-			console.log(accountDetails);
+			wallet = {
+				"privKey": accountDetails.data.private_key,
+				"pubKey": accountDetails.data.public_key,
+				"address": accountDetails.data.address
+			}
+			console.log(wallet.address);
 		})
 	});
 
@@ -23,11 +26,15 @@
 	<div class="h-screen w-screen bg-gray-100 flex items-center">
 		<div class="container flex flex-col md:flex-row items-center justify-center px-5 text-gray-700">
 			<div class="max-w-lg text-center">
-				<h1 class="text-5xl font-dark font-bold m-6">Hello world!</h1>
+				<h1 class="text-5xl font-dark font-bold m-6">Arionum Wallet</h1>
 
-				<Counter />
+				{#if wallet}
+					<p class="text-small mt-6">Address</p>
+					<p class="text-xs break-words">{wallet.address}</p>
 
-				<p class="m-6">Visit <a href="https://svelte.dev">svelte.dev</a> to learn how to build Svelte apps.</p>
+					<p class="text-small mt-6">Private Key</p>
+					<p class="text-xs break-words">{wallet.privKey}</p>
+				{/if}
 			</div>
 		</div>
 	</div>
