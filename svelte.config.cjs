@@ -19,11 +19,6 @@ module.exports = {
 		vite: {
 			ssr: {
 				noExternal: Object.keys(pkg.dependencies || {})
-			},
-			server: {
-				proxy: {
-					'/api': 'http://35.206.78.216/'
-				},
 			}
 		}
 	}
